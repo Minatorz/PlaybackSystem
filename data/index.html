@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>ThesisPrototype</title>
+    <link rel="stylesheet" href="styles.css"> <!-- Link to CSS file -->
+    <script src="script.js" defer></script> <!-- Link to JavaScript file -->
+</head>
+<body>
+    <h1>PROTOTYPE I</h1>
+
+    <!-- Display Song Information Here -->
+    <div id="songInfo" class="song-info">Loading song information...</div>
+
+    <!-- Control Buttons -->
+    <div class="button-container">
+        <button class="button" onclick="prevSong()">PREV</button>
+        <button class="button" onclick="sendCommand('start')">START</button>
+        <button class="button" onclick="sendCommand('stop')">STOP</button>
+        <button class="button" onclick="nextSong()">NEXT</button>
+    </div>
+</body>
+</html>
