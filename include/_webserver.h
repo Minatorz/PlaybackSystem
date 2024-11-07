@@ -10,6 +10,5 @@ extern int currentCueIndex;
 
 void initializeWebServer();
 void handleWebServer();
-void sendCueToAbleton(int index, const String& name, float time);
 
 #endif

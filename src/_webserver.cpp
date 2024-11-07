@@ -6,7 +6,7 @@ WebServer server(80);
 String cueDataJson = "[]";
 int currentCueIndex = 0;
 
-void initializeWebServer() {
+void getWebFiles() {
     // Define route to serve the HTML file
     server.on("/", []() {
         File file = openFile("/index.html", "r");
@@ -42,49 +42,55 @@ void initializeWebServer() {
         server.streamFile(file, "application/javascript");
         file.close();
     });
+}
 
-    // Route to turn on an LED and send MIDI note
+void StartButton(){  
     server.on("/start", []() {
         digitalWrite(LED_BUILTIN, HIGH);
         MIDInoteSent(60, 127, 1);
         server.send(200, "text/plain", "START");
     });
+}
 
-    // Route to turn off an LED and send MIDI note
+void StopButton() {
     server.on("/stop", []() {
         digitalWrite(LED_BUILTIN, LOW);
         MIDInoteSent(61, 127, 1);
         server.send(200, "text/plain", "STOP");
     });
+}
 
+void SelectSongButton() {
     server.on("/select_song", HTTP_POST, []() {
-        Serial.println("Received request for /select_song");
+    Serial.println("Received request for /select_song");
 
-        // Instead of server.hasArg("plain"), we will directly read the body
-        if (server.hasArg("plain")) {
-            String body = server.arg("plain");
-            Serial.println("Body: " + body);
+    // Instead of server.hasArg("plain"), we will directly read the body
+    if (server.hasArg("plain")) {
+        String body = server.arg("plain");
+        Serial.println("Body: " + body);
 
-            // Create a JSON document to parse the received cue data
-            DynamicJsonDocument doc(1024);
-            DeserializationError error = deserializeJson(doc, body);
+        // Create a JSON document to parse the received cue data
+        DynamicJsonDocument doc(1024);
+        DeserializationError error = deserializeJson(doc, body);
 
-            if (!error) {
-                // Extract index
-                int index = doc["index"];
-                Serial.printf("Selected song index: %d\n", index);
-                MIDInoteSent(64 + index, 127, 1);
-                server.send(200, "text/plain", "Song index received");
-            } else {
-                Serial.println("Failed to parse JSON data");
-                server.send(400, "text/plain", "Invalid JSON format");
-            }
+        if (!error) {
+            // Extract index
+            int index = doc["index"];
+            Serial.printf("Selected song index: %d\n", index);
+            MIDInoteSent(64 + index, 127, 1);
+            server.send(200, "text/plain", "Song index received");
         } else {
-            Serial.println("No data received");
-            server.send(400, "text/plain", "No data received");
+            Serial.println("Failed to parse JSON data");
+            server.send(400, "text/plain", "Invalid JSON format");
         }
-    });
+    } else {
+        Serial.println("No data received");
+        server.send(400, "text/plain", "No data received");
+    }
+});
+}
 
+void CueData() {
     server.on("/current_song", HTTP_GET, []() {
         // Create a JSON response with the current song index
         DynamicJsonDocument responseDoc(1024);
@@ -112,16 +118,19 @@ void initializeWebServer() {
         server.send(200, "application/json", cueDataJson);
     });
 
+}
+
+void initializeWebServer() {
+    getWebFiles();
+    StartButton();
+    StopButton();
+    SelectSongButton();
+    CueData();
     // Start the server
     server.begin();
+    Serial.println("Start the Web Server!");
 }
 
 void handleWebServer() {
     server.handleClient();
-}
-
-void sendCueToAbleton(int index) {
-    // Logic to send the cue selection to Ableton Live
-    
-    // Insert MIDI or serial commands to Ableton here
 }

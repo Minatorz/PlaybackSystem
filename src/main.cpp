@@ -7,7 +7,7 @@
 
 void setup() {
   Serial.begin(115200);
-  pinMode(LED_BUILTIN, OUTPUT);
+
   initilaizeMIDI();
   if (!initializeFileSystem()) {
     return;
@@ -16,7 +16,6 @@ void setup() {
   initializeWebServer();
   allTaskHandle();
 }
-
 void loop() {
 
 }

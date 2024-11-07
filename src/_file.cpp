@@ -5,6 +5,7 @@ bool initializeFileSystem() {
         Serial.println("LittleFS Mount Failed");
         return false;
     }
+    Serial.println("LittleFS successfully Mounted!");
     return true;
 }
 
